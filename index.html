@@ -5,27 +5,63 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Final Commit — Cathy 離職倒數</title>
   <style>
-    @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;700&family=Noto+Sans+TC:wght@300;400;700&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Inter:wght@300;400;500;600;700&family=Noto+Sans+TC:wght@300;400;500;700&display=swap');
 
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #0a0a0f;
-      --surface:   #13131a;
-      --border:    rgba(255,255,255,0.08);
-      --accent:    #7c6af7;
-      --accent2:   #f7a26a;
-      --text:      #e8e8f0;
-      --muted:     #6b6b80;
-      --glow:      rgba(124,106,247,0.35);
+      --bg:           #06060c;
+      --surface:      #0e0e18;
+      --surface2:     #14141f;
+      --border:       rgba(255,255,255,0.07);
+      --border-hi:    rgba(255,255,255,0.13);
+      --purple:       #8b7cf8;
+      --purple-dim:   rgba(139,124,248,0.14);
+      --purple-glow:  rgba(139,124,248,0.38);
+      --amber:        #f59e0b;
+      --amber-dim:    rgba(245,158,11,0.13);
+      --cyan:         #22d3ee;
+      --green:        #4ade80;
+      --pink:         #f472b6;
+      --text:         #f0efff;
+      --muted:        #64648a;
+      --muted2:       #9090b8;
+      --mono:         'JetBrains Mono', 'Courier New', monospace;
+      --sans:         'Inter', 'Noto Sans TC', sans-serif;
     }
 
     html, body {
       height: 100%;
       background: var(--bg);
       color: var(--text);
-      font-family: 'Inter', 'Noto Sans TC', sans-serif;
+      font-family: var(--sans);
       overflow-x: hidden;
+    }
+
+    /* ── Mesh gradient background ── */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 80% 60% at 20% 10%, rgba(139,124,248,0.07) 0%, transparent 55%),
+        radial-gradient(ellipse 60% 50% at 80% 80%, rgba(245,158,11,0.06) 0%, transparent 55%),
+        radial-gradient(ellipse 50% 40% at 60% 40%, rgba(34,211,238,0.04) 0%, transparent 50%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Grid lines ── */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background-image:
+        linear-gradient(rgba(139,124,248,0.025) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(139,124,248,0.025) 1px, transparent 1px);
+      background-size: 56px 56px;
+      pointer-events: none;
+      z-index: 0;
     }
 
     /* ── Canvas particles ── */
@@ -45,102 +81,165 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      padding: 2rem 1.5rem 4rem;
-      gap: 2.5rem;
+      padding: 3rem 1.5rem 5rem;
+      gap: 2.75rem;
     }
 
-    /* ── Badge ── */
-    .badge {
-      display: inline-flex;
-      align-items: center;
-      gap: 0.5rem;
-      padding: 0.35rem 1rem;
-      border-radius: 999px;
-      border: 1px solid var(--border);
-      background: rgba(255,255,255,0.04);
-      font-size: 0.75rem;
-      letter-spacing: 0.12em;
-      text-transform: uppercase;
-      color: var(--muted);
+    /* ── Git commit block ── */
+    .git-block {
+      font-family: var(--mono);
+      font-size: 0.77rem;
+      line-height: 1.7;
+      background: var(--surface);
+      border: 1px solid var(--border-hi);
+      border-radius: 1rem;
+      padding: 1.4rem 1.75rem;
+      max-width: 520px;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
     }
-    .badge-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--accent2);
-      animation: pulse 2s ease-in-out infinite;
+    .git-block::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent 0%, var(--purple) 30%, var(--cyan) 70%, transparent 100%);
     }
+    .git-block::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 100px;
+      background: linear-gradient(to top, rgba(139,124,248,0.04) 0%, transparent 100%);
+      pointer-events: none;
+    }
+    .git-line { display: flex; gap: 0.65rem; flex-wrap: wrap; align-items: baseline; }
+    .git-line + .git-line { margin-top: 0.15rem; }
+    .git-key   { color: var(--muted2); }
+    .git-hash  { color: var(--purple); font-weight: 600; letter-spacing: 0.03em; }
+    .git-tag {
+      padding: 0.1rem 0.45rem;
+      border-radius: 0.3rem;
+      font-size: 0.7rem;
+      font-weight: 600;
+    }
+    .git-head   { background: rgba(74,222,128,0.13); color: var(--green); }
+    .git-branch { background: var(--purple-dim); color: var(--purple); }
+    .git-author { color: var(--cyan); }
+    .git-date   { color: var(--muted); }
+    .git-msg {
+      margin-top: 1rem;
+      padding-top: 0.9rem;
+      border-top: 1px solid var(--border);
+      font-size: 0.82rem;
+      color: var(--text);
+    }
+    .git-msg-type  { color: var(--green); font-weight: 600; }
+    .git-msg-scope { color: var(--amber); }
+    .git-msg-desc  { color: var(--muted2); }
 
-    /* ── Hero heading ── */
+    /* ── Hero ── */
     .hero { text-align: center; }
     .hero h1 {
-      font-size: clamp(2.2rem, 6vw, 4.5rem);
+      font-size: clamp(2.8rem, 8vw, 5.5rem);
       font-weight: 700;
-      line-height: 1.1;
-      letter-spacing: -0.02em;
-      background: linear-gradient(135deg, #fff 30%, var(--accent) 70%, var(--accent2));
+      line-height: 1.05;
+      letter-spacing: -0.03em;
+    }
+    .hero h1 .line1 {
+      display: block;
+      background: linear-gradient(135deg, #fff 15%, var(--purple) 50%, var(--cyan) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
     }
-    .hero h1 span { display: block; }
+    .hero h1 .line2 {
+      display: block;
+      background: linear-gradient(135deg, var(--amber) 0%, #fb923c 50%, #f43f5e 100%);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
     .hero .sub {
-      margin-top: 1rem;
-      font-size: clamp(0.9rem, 2vw, 1.1rem);
+      margin-top: 1.25rem;
+      font-size: clamp(0.88rem, 2vw, 1.05rem);
       color: var(--muted);
       font-weight: 300;
       letter-spacing: 0.03em;
     }
 
-    /* ── Countdown grid ── */
+    /* ── Countdown ── */
+    .countdown-wrap { display: flex; flex-direction: column; align-items: center; gap: 1.25rem; }
     .countdown {
       display: flex;
-      gap: 1rem;
+      gap: 1.25rem;
       flex-wrap: wrap;
       justify-content: center;
+      align-items: flex-start;
     }
     .unit {
-      position: relative;
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-width: 110px;
+      gap: 0.7rem;
     }
     .unit-card {
-      width: 110px; height: 110px;
+      width: 118px; height: 118px;
       display: flex;
       align-items: center;
       justify-content: center;
       background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 1.25rem;
-      box-shadow: 0 0 0 0 var(--glow);
-      transition: box-shadow 0.3s;
+      border: 1px solid var(--border-hi);
+      border-radius: 1.5rem;
+      position: relative;
+      overflow: hidden;
+      transition: box-shadow 0.35s ease, border-color 0.35s ease;
+      cursor: default;
     }
-    .unit-card:hover { box-shadow: 0 0 32px 4px var(--glow); }
+    .unit-card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(ellipse at 50% -10%, var(--purple-dim) 0%, transparent 65%);
+      pointer-events: none;
+    }
+    .unit-card::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(139,124,248,0.2), transparent);
+    }
+    .unit-card:hover {
+      box-shadow: 0 0 36px var(--purple-glow), 0 0 72px rgba(139,124,248,0.12);
+      border-color: rgba(139,124,248,0.35);
+    }
     .unit-num {
-      font-size: 2.8rem;
-      font-weight: 700;
-      font-variant-numeric: tabular-nums;
-      letter-spacing: -0.03em;
-      background: linear-gradient(160deg, #fff, var(--accent));
+      font-family: var(--mono);
+      font-size: 3rem;
+      font-weight: 600;
+      letter-spacing: -0.04em;
+      background: linear-gradient(170deg, #fff 30%, var(--purple) 100%);
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
-      transition: transform 0.15s ease;
+      transition: transform 0.12s cubic-bezier(0.34, 1.56, 0.64, 1);
+      will-change: transform;
     }
-    .unit-num.flip { transform: scale(1.15); }
+    .unit-num.flip { transform: scale(1.2) translateY(-2px); }
     .unit-label {
-      margin-top: 0.6rem;
-      font-size: 0.7rem;
-      letter-spacing: 0.15em;
+      font-family: var(--mono);
+      font-size: 0.62rem;
+      letter-spacing: 0.22em;
       text-transform: uppercase;
       color: var(--muted);
     }
-    /* Separator colon */
     .sep {
       align-self: flex-start;
-      margin-top: 1.85rem;
-      font-size: 2rem;
+      margin-top: 2rem;
+      font-size: 2.2rem;
+      font-weight: 300;
       color: var(--muted);
       line-height: 1;
       user-select: none;
@@ -151,24 +250,26 @@
     .date-chip {
       display: inline-flex;
       align-items: center;
-      gap: 0.6rem;
-      padding: 0.6rem 1.4rem;
+      gap: 0.65rem;
+      padding: 0.65rem 1.5rem;
       border-radius: 999px;
-      background: rgba(124,106,247,0.12);
-      border: 1px solid rgba(124,106,247,0.3);
-      font-size: 0.9rem;
-      color: #b8b0f5;
+      background: var(--amber-dim);
+      border: 1px solid rgba(245,158,11,0.22);
+      font-size: 0.84rem;
+      color: #fcd34d;
+      font-family: var(--mono);
+      letter-spacing: 0.04em;
     }
-    .date-chip svg { opacity: 0.7; }
+    .date-chip svg { flex-shrink: 0; opacity: 0.75; }
 
     /* ── Message card ── */
     .message-card {
-      max-width: 540px;
+      max-width: 560px;
       width: 100%;
-      padding: 1.8rem 2rem;
+      padding: 2.25rem 2.5rem;
       background: var(--surface);
-      border: 1px solid var(--border);
-      border-radius: 1.5rem;
+      border: 1px solid var(--border-hi);
+      border-radius: 1.75rem;
       text-align: center;
       position: relative;
       overflow: hidden;
@@ -176,81 +277,112 @@
     .message-card::before {
       content: '';
       position: absolute;
-      top: -60px; left: 50%;
+      top: -80px; left: 50%;
       transform: translateX(-50%);
-      width: 200px; height: 120px;
-      background: var(--glow);
+      width: 300px; height: 180px;
+      background: var(--purple-glow);
       border-radius: 50%;
-      filter: blur(40px);
+      filter: blur(70px);
+      opacity: 0.25;
       pointer-events: none;
+    }
+    .message-card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 1px;
+      background: linear-gradient(90deg, transparent, rgba(139,124,248,0.3), transparent);
+    }
+    .quote-mark {
+      font-family: Georgia, 'Times New Roman', serif;
+      font-size: 3.5rem;
+      line-height: 1;
+      color: var(--purple);
+      opacity: 0.25;
+      margin-bottom: 0.25rem;
+      display: block;
     }
     .message-card p {
       font-size: 1rem;
-      line-height: 1.8;
-      color: var(--muted);
+      line-height: 1.9;
+      color: var(--muted2);
       font-weight: 300;
     }
     .message-card p strong {
       color: var(--text);
       font-weight: 600;
     }
-
-    /* ── Footer ── */
-    .footer {
-      font-size: 0.72rem;
-      color: var(--muted);
-      letter-spacing: 0.08em;
-      opacity: 0.6;
+    .emoji-row {
+      margin-top: 1.5rem;
+      font-size: 1.6rem;
+      letter-spacing: 0.35em;
     }
 
-    /* ── Confetti burst on expiry ── */
+    /* ── Done state ── */
     .done-msg {
       display: none;
       flex-direction: column;
       align-items: center;
-      gap: 1rem;
+      gap: 1.25rem;
       text-align: center;
     }
     .done-msg.visible { display: flex; }
     .done-msg h2 {
       font-size: clamp(1.8rem, 5vw, 3rem);
       font-weight: 700;
-      background: linear-gradient(135deg, var(--accent2), var(--accent));
+      background: linear-gradient(135deg, var(--amber), #fb923c, var(--pink), var(--purple));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
       background-clip: text;
+    }
+    .done-msg p {
+      color: var(--muted2);
+      font-size: 1.05rem;
+      max-width: 420px;
+      line-height: 1.7;
+    }
+
+    /* ── Footer ── */
+    .footer {
+      font-family: var(--mono);
+      font-size: 0.68rem;
+      color: var(--muted);
+      letter-spacing: 0.1em;
+      opacity: 0.45;
     }
 
     /* ── Animations ── */
     @keyframes pulse {
       0%, 100% { opacity: 1; transform: scale(1); }
-      50%       { opacity: 0.5; transform: scale(0.85); }
+      50%       { opacity: 0.4; transform: scale(0.8); }
     }
     @keyframes blink {
       0%, 100% { opacity: 1; }
       50%       { opacity: 0; }
     }
     @keyframes fadeUp {
-      from { opacity: 0; transform: translateY(24px); }
+      from { opacity: 0; transform: translateY(26px); }
       to   { opacity: 1; transform: translateY(0); }
     }
     .page > * {
-      animation: fadeUp 0.6s ease both;
+      animation: fadeUp 0.65s ease both;
     }
-    .page > *:nth-child(1) { animation-delay: 0.05s; }
-    .page > *:nth-child(2) { animation-delay: 0.15s; }
-    .page > *:nth-child(3) { animation-delay: 0.28s; }
-    .page > *:nth-child(4) { animation-delay: 0.38s; }
-    .page > *:nth-child(5) { animation-delay: 0.48s; }
-    .page > *:nth-child(6) { animation-delay: 0.58s; }
+    .page > *:nth-child(1) { animation-delay: 0.08s; }
+    .page > *:nth-child(2) { animation-delay: 0.18s; }
+    .page > *:nth-child(3) { animation-delay: 0.32s; }
+    .page > *:nth-child(4) { animation-delay: 0.44s; }
+    .page > *:nth-child(5) { animation-delay: 0.55s; }
+    .page > *:nth-child(6) { animation-delay: 0.65s; }
+    .page > *:nth-child(7) { animation-delay: 0.73s; }
 
     /* ── Responsive ── */
     @media (max-width: 480px) {
       .unit-card { width: 80px; height: 80px; }
-      .unit { min-width: 80px; }
       .unit-num { font-size: 2rem; }
-      .sep { margin-top: 1.35rem; font-size: 1.5rem; }
-      .countdown { gap: 0.6rem; }
+      .sep { margin-top: 1.4rem; font-size: 1.6rem; }
+      .countdown { gap: 0.65rem; }
+      .git-block { font-size: 0.68rem; padding: 1.1rem 1.25rem; }
+      .message-card { padding: 1.75rem 1.5rem; }
     }
   </style>
 </head>
@@ -260,101 +392,120 @@
 
 <main class="page">
 
-  <!-- Badge -->
-  <div class="badge">
-    <span class="badge-dot"></span>
-    Final Commit
+  <!-- Git commit block -->
+  <div class="git-block">
+    <div class="git-line">
+      <span class="git-key">commit</span>
+      <span class="git-hash">f1nal·c0mm1t·2026</span>
+      <span class="git-tag git-head">HEAD</span>
+      <span class="git-tag git-branch">→ main</span>
+    </div>
+    <div class="git-line">
+      <span class="git-key">Author:</span>
+      <span class="git-author">Your Teammates &lt;team@company.dev&gt;</span>
+    </div>
+    <div class="git-line">
+      <span class="git-key">Date:&nbsp;&nbsp;</span>
+      <span class="git-date">Thu Feb 26 17:30:00 2026 +0800</span>
+    </div>
+    <div class="git-msg">
+      <span class="git-msg-type">feat</span><span class="git-msg-scope">(farewell)</span><span class="git-msg-desc">: add final commit for Cathy — thank you for everything ✨</span>
+    </div>
   </div>
 
   <!-- Hero -->
   <div class="hero">
     <h1>
-      <span>倒數 Cathy</span>
-      <span>離職的日子</span>
+      <span class="line1">倒數 Cathy</span>
+      <span class="line2">離職的日子</span>
     </h1>
     <p class="sub">距離那個讓人又哭又笑的日子，還有…</p>
   </div>
 
   <!-- Countdown -->
-  <div class="countdown" id="countdown">
-    <div class="unit">
-      <div class="unit-card"><span class="unit-num" id="d">00</span></div>
-      <span class="unit-label">天</span>
-    </div>
-    <div class="sep">:</div>
-    <div class="unit">
-      <div class="unit-card"><span class="unit-num" id="h">00</span></div>
-      <span class="unit-label">小時</span>
-    </div>
-    <div class="sep">:</div>
-    <div class="unit">
-      <div class="unit-card"><span class="unit-num" id="m">00</span></div>
-      <span class="unit-label">分鐘</span>
-    </div>
-    <div class="sep">:</div>
-    <div class="unit">
-      <div class="unit-card"><span class="unit-num" id="s">00</span></div>
-      <span class="unit-label">秒</span>
+  <div class="countdown-wrap" id="countdown-wrap">
+    <div class="countdown" id="countdown">
+      <div class="unit">
+        <div class="unit-card"><span class="unit-num" id="d">00</span></div>
+        <span class="unit-label">days</span>
+      </div>
+      <div class="sep">:</div>
+      <div class="unit">
+        <div class="unit-card"><span class="unit-num" id="h">00</span></div>
+        <span class="unit-label">hours</span>
+      </div>
+      <div class="sep">:</div>
+      <div class="unit">
+        <div class="unit-card"><span class="unit-num" id="m">00</span></div>
+        <span class="unit-label">mins</span>
+      </div>
+      <div class="sep">:</div>
+      <div class="unit">
+        <div class="unit-card"><span class="unit-num" id="s">00</span></div>
+        <span class="unit-label">secs</span>
+      </div>
     </div>
   </div>
 
   <!-- Done message (hidden until time's up) -->
   <div class="done-msg" id="done">
     <h2>🎊 感謝 Cathy 的每一天 🎊</h2>
-    <p style="color:var(--muted)">今天，她正式告別這段旅程。祝一切都好。</p>
+    <p>今天，她正式開始新的旅程。<br/>祝一切順風，我們永遠以你為傲。</p>
   </div>
 
-  <!-- Target date chip -->
+  <!-- Date chip -->
   <div class="date-chip">
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+      <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
     </svg>
-    目標日期：2026 年 2 月 28 日
+    2026 · 02 · 26 &nbsp; 17:30 CST
   </div>
 
   <!-- Message card -->
   <div class="message-card">
+    <span class="quote-mark">"</span>
     <p>
       謝謝 <strong>Cathy</strong> 這段時間的陪伴與努力，<br/>
       一起扛過的 deadline、分享過的午餐、<br/>
       還有那些說不完的廢話，都是最好的記憶。<br/><br/>
-      去迎接你的下一章吧，<strong>我們永遠在這裡幫你歡呼</strong>。🎉
+      去迎接你的下一章吧，<br/>
+      <strong>我們永遠在這裡幫你歡呼</strong>。
     </p>
+    <div class="emoji-row">🎉 🚀 ✨</div>
   </div>
 
   <!-- Footer -->
-  <p class="footer">Made with ❤️ by your teammates · final-commit</p>
+  <p class="footer">// made with ❤️ by your teammates · final-commit</p>
 
 </main>
 
 <script>
   // ── Countdown ──────────────────────────────────────────────
-  const TARGET = new Date('2026-02-28T00:00:00+08:00').getTime();
+  const TARGET = new Date('2026-02-26T17:30:00+08:00').getTime();
 
   const el = {
-    d: document.getElementById('d'),
-    h: document.getElementById('h'),
-    m: document.getElementById('m'),
-    s: document.getElementById('s'),
+    d:    document.getElementById('d'),
+    h:    document.getElementById('h'),
+    m:    document.getElementById('m'),
+    s:    document.getElementById('s'),
     done: document.getElementById('done'),
-    countdown: document.getElementById('countdown'),
+    wrap: document.getElementById('countdown-wrap'),
   };
 
   function pad(n) { return String(Math.max(0, n)).padStart(2, '0'); }
 
-  function flash(el) {
-    el.classList.add('flip');
-    setTimeout(() => el.classList.remove('flip'), 200);
+  function flash(node) {
+    node.classList.add('flip');
+    setTimeout(() => node.classList.remove('flip'), 180);
   }
 
   let prev = {};
 
   function tick() {
-    const now  = Date.now();
-    const diff = TARGET - now;
+    const diff = TARGET - Date.now();
 
     if (diff <= 0) {
-      el.countdown.style.display = 'none';
+      el.wrap.style.display = 'none';
       el.done.classList.add('visible');
       launchConfetti();
       return;
@@ -365,10 +516,10 @@
     const mins  = Math.floor((diff % 3600000)  / 60000);
     const secs  = Math.floor((diff % 60000)    / 1000);
 
-    if (days  !== prev.d) { el.d.textContent = pad(days);  flash(el.d); prev.d = days; }
+    if (days  !== prev.d) { el.d.textContent = pad(days);  flash(el.d); prev.d = days;  }
     if (hours !== prev.h) { el.h.textContent = pad(hours); flash(el.h); prev.h = hours; }
-    if (mins  !== prev.m) { el.m.textContent = pad(mins);  flash(el.m); prev.m = mins; }
-    if (secs  !== prev.s) { el.s.textContent = pad(secs);  flash(el.s); prev.s = secs; }
+    if (mins  !== prev.m) { el.m.textContent = pad(mins);  flash(el.m); prev.m = mins;  }
+    if (secs  !== prev.s) { el.s.textContent = pad(secs);  flash(el.s); prev.s = secs;  }
   }
 
   tick();
@@ -377,9 +528,9 @@
   // ── Particle canvas ────────────────────────────────────────
   const canvas = document.getElementById('canvas');
   const ctx    = canvas.getContext('2d');
-  let W, H, particles = [];
+  let W, H;
 
-  const COLORS = ['#7c6af7','#f7a26a','#6af7c8','#f76ab4','#fff'];
+  const COLORS = ['#8b7cf8', '#f59e0b', '#22d3ee', '#f472b6', 'rgba(255,255,255,0.5)'];
 
   function resize() {
     W = canvas.width  = window.innerWidth;
@@ -388,17 +539,15 @@
   window.addEventListener('resize', resize);
   resize();
 
-  function Particle() {
-    this.x     = Math.random() * W;
-    this.y     = Math.random() * H;
-    this.r     = Math.random() * 1.5 + 0.5;
-    this.vx    = (Math.random() - 0.5) * 0.3;
-    this.vy    = (Math.random() - 0.5) * 0.3;
-    this.alpha = Math.random() * 0.5 + 0.1;
-    this.color = COLORS[Math.floor(Math.random() * COLORS.length)];
-  }
-
-  for (let i = 0; i < 120; i++) particles.push(new Particle());
+  const particles = Array.from({ length: 100 }, () => ({
+    x:     Math.random() * window.innerWidth,
+    y:     Math.random() * window.innerHeight,
+    r:     Math.random() * 1.6 + 0.4,
+    vx:    (Math.random() - 0.5) * 0.22,
+    vy:    (Math.random() - 0.5) * 0.22,
+    alpha: Math.random() * 0.4 + 0.05,
+    color: COLORS[Math.floor(Math.random() * COLORS.length)],
+  }));
 
   function drawParticles() {
     ctx.clearRect(0, 0, W, H);
@@ -408,11 +557,8 @@
       ctx.fillStyle = p.color;
       ctx.globalAlpha = p.alpha;
       ctx.fill();
-      p.x += p.vx; p.y += p.vy;
-      if (p.x < 0) p.x = W;
-      if (p.x > W) p.x = 0;
-      if (p.y < 0) p.y = H;
-      if (p.y > H) p.y = 0;
+      p.x = (p.x + p.vx + W) % W;
+      p.y = (p.y + p.vy + H) % H;
     }
     ctx.globalAlpha = 1;
     requestAnimationFrame(drawParticles);
@@ -421,34 +567,43 @@
 
   // ── Confetti on done ──────────────────────────────────────
   function launchConfetti() {
-    const confetti = [];
-    for (let i = 0; i < 200; i++) {
-      confetti.push({
-        x: Math.random() * W, y: -10,
-        vx: (Math.random() - 0.5) * 6,
-        vy: Math.random() * 4 + 2,
-        r:  Math.random() * 6 + 3,
-        color: COLORS[Math.floor(Math.random() * COLORS.length)],
-        spin: Math.random() * Math.PI * 2,
-        dSpin: (Math.random() - 0.5) * 0.2,
-      });
-    }
+    const CONF_COLORS = ['#8b7cf8', '#f59e0b', '#22d3ee', '#f472b6', '#4ade80', '#fff'];
+    const pieces = Array.from({ length: 260 }, () => ({
+      x:     Math.random() * W,
+      y:     -20,
+      vx:    (Math.random() - 0.5) * 9,
+      vy:    Math.random() * 5 + 2,
+      r:     Math.random() * 7 + 3,
+      color: CONF_COLORS[Math.floor(Math.random() * CONF_COLORS.length)],
+      spin:  Math.random() * Math.PI * 2,
+      dSpin: (Math.random() - 0.5) * 0.22,
+      rect:  Math.random() > 0.45,
+    }));
+
     let frame = 0;
-    function drawConfetti() {
-      for (const c of confetti) {
+    function draw() {
+      for (const c of pieces) {
         ctx.save();
         ctx.translate(c.x, c.y);
         ctx.rotate(c.spin);
         ctx.fillStyle = c.color;
-        ctx.globalAlpha = Math.max(0, 1 - frame / 180);
-        ctx.fillRect(-c.r / 2, -c.r / 2, c.r, c.r * 1.6);
+        ctx.globalAlpha = Math.max(0, 1 - frame / 210);
+        if (c.rect) {
+          ctx.fillRect(-c.r / 2, -c.r / 2, c.r, c.r * 1.7);
+        } else {
+          ctx.beginPath();
+          ctx.arc(0, 0, c.r / 2, 0, Math.PI * 2);
+          ctx.fill();
+        }
         ctx.restore();
-        c.x += c.vx; c.y += c.vy; c.vy += 0.12; c.spin += c.dSpin;
+        c.x  += c.vx;
+        c.y  += c.vy;
+        c.vy += 0.11;
+        c.spin += c.dSpin;
       }
-      frame++;
-      if (frame < 200) requestAnimationFrame(drawConfetti);
+      if (++frame < 230) requestAnimationFrame(draw);
     }
-    drawConfetti();
+    draw();
   }
 </script>
 </body>
