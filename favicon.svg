@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
+  <defs>
+    <linearGradient id="g" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#8b7cf8"/>
+      <stop offset="100%" stop-color="#22d3ee"/>
+    </linearGradient>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0e0e18"/>
+      <stop offset="100%" stop-color="#14141f"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="32" height="32" rx="7" fill="url(#bg)"/>
+
+  <!-- Border glow -->
+  <rect width="32" height="32" rx="7" fill="none" stroke="#8b7cf8" stroke-width="0.75" stroke-opacity="0.35"/>
+
+  <!-- Left branch line -->
+  <line x1="2" y1="16" x2="10" y2="16"
+        stroke="#8b7cf8" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.55"/>
+
+  <!-- Right branch line -->
+  <line x1="22" y1="16" x2="30" y2="16"
+        stroke="#22d3ee" stroke-width="1.8" stroke-linecap="round" stroke-opacity="0.55"/>
+
+  <!-- Commit ring (outer) -->
+  <circle cx="16" cy="16" r="7.5" fill="none" stroke="url(#g)" stroke-width="2"/>
+
+  <!-- Commit dot (inner) -->
+  <circle cx="16" cy="16" r="3.5" fill="url(#g)"/>
+</svg>
